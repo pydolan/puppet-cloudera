@@ -133,11 +133,11 @@ class cloudera::repo (
       release      => "${::lsbdistcodename}-cdh4",
     }
     apt::source { 'impala':      
-      location     => '${cloudera::params::aptserver}/impala/ubuntu/${::lsbdistcodename}/${::architecture}/impala',
+      location     => "${cloudera::params::aptserver}/impala/ubuntu/${::lsbdistcodename}/${::architecture}/impala",
       release      => "${::lsbdistcodename}-impala1",
     }
     apt::source { 'clouderaextras':      
-      location     => '${cloudera::params::aptserver}/gplextras/ubuntu/{::lsbdistcodename}/${::architecture}/gplextras',
+      location     => "${cloudera::params::aptserver}/gplextras/ubuntu/{::lsbdistcodename}/${::architecture}/gplextras",
       release      => "${::lsbdistcodename}-gplextras4",
     }
   } else {
