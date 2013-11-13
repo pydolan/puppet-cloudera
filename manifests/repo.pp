@@ -129,16 +129,16 @@ class cloudera::repo (
       ensure       => $ensure, 
     }
     apt::source { 'cloudera':      
-      location     => "${cloudera::params::aptserver}/cdh4/ubuntu/{::lsbdistcodename}/${::architecture}/cdh",
-      release      => "{::lsbdistcodename}-cdh4",
+      location     => "${cloudera::params::aptserver}/cdh4/ubuntu/${::lsbdistcodename}/${::architecture}/cdh",
+      release      => "${::lsbdistcodename}-cdh4",
     }
     apt::source { 'impala':      
-      location     => '${cloudera::params::aptserver}/impala/ubuntu/{::lsbdistcodename}/${::architecture}/impala',
-      release      => "{::lsbdistcodename}-impala1",
+      location     => '${cloudera::params::aptserver}/impala/ubuntu/${::lsbdistcodename}/${::architecture}/impala',
+      release      => "${::lsbdistcodename}-impala1",
     }
     apt::source { 'clouderaextras':      
       location     => '${cloudera::params::aptserver}/gplextras/ubuntu/{::lsbdistcodename}/${::architecture}/gplextras',
-      release      => "{::lsbdistcodename}-gplextras4",
+      release      => "${::lsbdistcodename}-gplextras4",
     }
   } else {
     fail("Class['cloudera::repo']: Unsupported operatingsystem: ${::operatingsystem}")

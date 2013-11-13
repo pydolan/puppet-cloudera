@@ -97,8 +97,8 @@ class cloudera::cm::repo (
       key_server   => $cloudera::params::apt_key_server,
       repos        => 'contrib',
       architecture => $::architecture,
-      location     => '${cloudera::params::aptserver}/cm4/ubuntu/{::lsbdistcodename}/${::architecture}/cm/',
-      release      => "{::lsbdistcodename}-cm4",
+      location     => '${cloudera::params::aptserver}/cm4/ubuntu/${::lsbdistcodename}/${::architecture}/cm/',
+      release      => "${::lsbdistcodename}-cm4",
     }
   } else {
     fail("Class['cloudera::cm::repo']: Unsupported operatingsystem: ${::operatingsystem}")
