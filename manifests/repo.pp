@@ -125,7 +125,7 @@ class cloudera::repo (
       key          => $cloudera::params::apt_key, 
       key_server   => $cloudera::params::apt_key_server,
       repos        => 'contrib',
-      architecture => ${::architecture},
+      architecture => $::architecture,
       ensure       => $ensure, 
     }
     apt::source { 'cloudera':      
