@@ -198,7 +198,7 @@ class cloudera::cm::server (
       }
 
       exec { 'cloudera-manager-server-db':
-        command => '/sbin/service cloudera-scm-server-db initdb',
+        command => "${cloudera::params::service} cloudera-scm-server-db initdb",
         creates => '/etc/cloudera-scm-server/db.mgmt.properties',
         require => Package['cloudera-manager-server-db'],
       }

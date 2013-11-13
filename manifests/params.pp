@@ -154,14 +154,23 @@ class cloudera::params {
   $cm_version  = '4'
   $ci_version  = '1'
 
-  case $::operatingsystem {
-    'CentOS', 'RedHat', 'OEL', 'OracleLinux': {
-      $cdh_yumpath = "/cdh4/redhat/${::os_maj_version}/${::architecture}/cdh/"
-      $cm_yumpath = "/cm4/redhat/${::os_maj_version}/${::architecture}/cm/"
-      $ci_yumpath = "/impala/redhat/${::os_maj_version}/${::architecture}/impala/"
-    }
-    default: {
-      fail("Module ${::module} is not supported on ${::operatingsystem}")
-    }
+  if $::osfamily == 'RedHat' {
+    $cdh_yumpath = "/cdh4/redhat/${::os_maj_version}/${::architecture}/cdh/"
+    $cm_yumpath = "/cm4/redhat/${::os_maj_version}/${::architecture}/cm/"
+    $ci_yumpath = "/impala/redhat/${::os_maj_version}/${::architecture}/impala/"
+    $service = '/sbin/service'
+    $apt_key = ''
+    $apt_key_server = ''
+    $aptserver = ''
+  } elsif $::operatingsystem == 'Ubuntu' {
+    $cdh_yumpath = ''
+    $cm_yumpath = ''
+    $ci_yumpath = ''
+    $service = '/usr/sbin/service'
+    $apt_key = '02A818DD'
+    $apt_key_server = 'pgp.mit.edu'          
+    $aptserver = 'http://archive.cloudera.com'
+  } else {
+    fail("Class['cloudera::params']: Unsupported operatingsystem: ${::operatingsystem}")
   }
 }

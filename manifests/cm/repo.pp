@@ -77,21 +77,30 @@ class cloudera::cm::repo (
     }
   }
 
-  case $::operatingsystem {
-    'CentOS', 'RedHat', 'OEL', 'OracleLinux': {
-      yumrepo { 'cloudera-manager':
-        descr          => 'Cloudera Manager',
-        enabled        => $enabled,
-        gpgcheck       => 1,
-        gpgkey         => "${cm_yumserver}${cm_yumpath}RPM-GPG-KEY-cloudera",
-        baseurl        => "${cm_yumserver}${cm_yumpath}${cm_version}/",
-        priority       => $cloudera::params::yum_priority,
-        protect        => $cloudera::params::yum_protect,
-        proxy          => $proxy,
-        proxy_username => $proxy_username,
-        proxy_password => $proxy_password,
-      }
+  if $::osfamily == 'RedHat' {
+    yumrepo { 'cloudera-manager':
+      descr          => 'Cloudera Manager',
+      enabled        => $enabled,
+      gpgcheck       => 1,
+      gpgkey         => "${cm_yumserver}${cm_yumpath}RPM-GPG-KEY-cloudera",
+      baseurl        => "${cm_yumserver}${cm_yumpath}${cm_version}/",
+      priority       => $cloudera::params::yum_priority,
+      protect        => $cloudera::params::yum_protect,
+      proxy          => $proxy,
+      proxy_username => $proxy_username,
+      proxy_password => $proxy_password,
     }
-    default: { }
+  } elsif $::operatingsystem == 'Ubuntu' {
+    apt::source { 'cm':
+      ensure       => $ensure, 
+      key          => $cloudera::params::apt_key, 
+      key_server   => $cloudera::params::apt_key_server,
+      repos        => 'contrib',
+      architecture => ${::architecture},
+      location     => '${cloudera::params::aptserver}/cm4/ubuntu/{::lsbdistcodename}/${::architecture}/cm/',
+      release      => "{::lsbdistcodename}-cm4",
+    }
+  } else {
+    fail("Class['cloudera::cm::repo']: Unsupported operatingsystem: ${::operatingsystem}")
   }
 }

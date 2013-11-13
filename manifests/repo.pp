@@ -95,33 +95,52 @@ class cloudera::repo (
     }
   }
 
-  case $::operatingsystem {
-    'CentOS', 'RedHat', 'OEL', 'OracleLinux': {
-      yumrepo { 'cloudera-cdh4':
-        descr          => 'Cloudera\'s Distribution for Hadoop, Version 4',
-        enabled        => $enabled,
-        gpgcheck       => 1,
-        gpgkey         => "${cdh_yumserver}${cdh_yumpath}RPM-GPG-KEY-cloudera",
-        baseurl        => "${cdh_yumserver}${cdh_yumpath}${cdh_version}/",
-        priority       => $cloudera::params::yum_priority,
-        protect        => $cloudera::params::yum_protect,
-        proxy          => $proxy,
-        proxy_username => $proxy_username,
-        proxy_password => $proxy_password,
-      }
-      yumrepo { 'cloudera-impala':
-        descr          => 'Impala',
-        enabled        => $enabled,
-        gpgcheck       => 1,
-        gpgkey         => "${ci_yumserver}${ci_yumpath}RPM-GPG-KEY-cloudera",
-        baseurl        => "${ci_yumserver}${ci_yumpath}${ci_version}/",
-        priority       => $cloudera::params::yum_priority,
-        protect        => $cloudera::params::yum_protect,
-        proxy          => $proxy,
-        proxy_username => $proxy_username,
-        proxy_password => $proxy_password,
-      }
+  if $::osfamily == 'RedHat' {
+    yumrepo { 'cloudera-cdh4':
+      descr          => 'Cloudera\'s Distribution for Hadoop, Version 4',
+      enabled        => $enabled,
+      gpgcheck       => 1,
+      gpgkey         => "${cdh_yumserver}${cdh_yumpath}RPM-GPG-KEY-cloudera",
+      baseurl        => "${cdh_yumserver}${cdh_yumpath}${cdh_version}/",
+      priority       => $cloudera::params::yum_priority,
+      protect        => $cloudera::params::yum_protect,
+      proxy          => $proxy,
+      proxy_username => $proxy_username,
+      proxy_password => $proxy_password,
     }
-    default: { }
+    yumrepo { 'cloudera-impala':
+      descr          => 'Impala',
+      enabled        => $enabled,
+      gpgcheck       => 1,
+      gpgkey         => "${ci_yumserver}${ci_yumpath}RPM-GPG-KEY-cloudera",
+      baseurl        => "${ci_yumserver}${ci_yumpath}${ci_version}/",
+      priority       => $cloudera::params::yum_priority,
+      protect        => $cloudera::params::yum_protect,
+      proxy          => $proxy,
+      proxy_username => $proxy_username,
+      proxy_password => $proxy_password,
+    }
+  } elsif $::operatingsystem == 'Ubuntu' {
+    Apt::Source {
+      key          => $cloudera::params::apt_key, 
+      key_server   => $cloudera::params::apt_key_server,
+      repos        => 'contrib',
+      architecture => ${::architecture},
+      ensure       => $ensure, 
+    }
+    apt::source { 'cloudera':      
+      location     => "${cloudera::params::aptserver}/cdh4/ubuntu/{::lsbdistcodename}/${::architecture}/cdh",
+      release      => "{::lsbdistcodename}-cdh4",
+    }
+    apt::source { 'impala':      
+      location     => '${cloudera::params::aptserver}/impala/ubuntu/{::lsbdistcodename}/${::architecture}/impala',
+      release      => "{::lsbdistcodename}-impala1",
+    }
+    apt::source { 'clouderaextras':      
+      location     => '${cloudera::params::aptserver}/gplextras/ubuntu/{::lsbdistcodename}/${::architecture}/gplextras',
+      release      => "{::lsbdistcodename}-gplextras4",
+    }
+  } else {
+    fail("Class['cloudera::repo']: Unsupported operatingsystem: ${::operatingsystem}")
   }
 }
