@@ -91,12 +91,14 @@ class cloudera::cm::repo (
       proxy_password => $proxy_password,
     }
   } elsif $::operatingsystem == 'Ubuntu' {
+#    Apt::Source {
+#      key          => $cloudera::params::apt_key, 
+#      key_server   => $cloudera::params::apt_key_server,
+#      repos        => 'contrib',
+#      architecture => $::architecture,
+#      ensure       => $ensure, 
+#    }
     apt::source { 'cm':
-      ensure       => $ensure, 
-      key          => $cloudera::params::apt_key, 
-      key_server   => $cloudera::params::apt_key_server,
-      repos        => 'contrib',
-      architecture => $::architecture,
       location     => "${cloudera::params::aptserver}/cm4/ubuntu/${::lsbdistcodename}/${::architecture}/cm/",
       release      => "${::lsbdistcodename}-cm4",
     }
