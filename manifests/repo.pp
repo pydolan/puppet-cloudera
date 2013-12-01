@@ -140,6 +140,10 @@ class cloudera::repo (
       location     => "${cloudera::params::aptserver}/gplextras/ubuntu/${::lsbdistcodename}/${::architecture}/gplextras",
       release      => "${::lsbdistcodename}-gplextras4",
     }
+    apt::source { 'cm':
+      location     => "${cloudera::params::aptserver}/cm4/ubuntu/${::lsbdistcodename}/${::architecture}/cm/",
+      release      => "${::lsbdistcodename}-cm4",
+    }
   } else {
     fail("Class['cloudera::repo']: Unsupported operatingsystem: ${::operatingsystem}")
   }
