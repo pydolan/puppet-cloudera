@@ -207,7 +207,7 @@ TODO
 * Document sqoop-metastore installation.
 * Document whirr installation.
 * Debian support: make sure JCE works.
-* Debian support: move CM repo into cm/repo.pp.
+* Debian support: move CM and java apt sources into cm/repo.pp and java/repo.pp.
 * Debian support: test Debian OS's other than Ubuntu 12.04.
 
 Contributing

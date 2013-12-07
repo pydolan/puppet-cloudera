@@ -121,6 +121,16 @@ class cloudera::repo (
       proxy_password => $proxy_password,
     }
   } elsif $::operatingsystem == 'Ubuntu' {
+    # adding java apt repo since Oracle Java no longer supported by Ubuntu 11+
+    apt::source { 'oracle-java':      
+      key          => 'EEA14886', 
+      key_server   => 'keyserver.ubuntu.com',
+      release      => $::lsbdistcodename,
+      repos        => 'main',
+      ensure       => $ensure, 
+      location     => "http://ppa.launchpad.net/webupd8team/java/ubuntu",
+    }
+    
     # cloudera repos
     apt::source { 'cloudera':      
       key          => $cloudera::params::apt_key, 

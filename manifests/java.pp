@@ -89,16 +89,6 @@ class cloudera::java (
       returns => [ 0, 2, ],
     }
   } elsif $::operatingsystem == 'Ubuntu' {
-    # adding apt repo since Oracle Java no longer supported by Ubuntu 11+
-    apt::source { 'oracle-java':      
-      key          => 'EEA14886', 
-      key_server   => 'keyserver.ubuntu.com',
-      release      => $::lsbdistcodename,
-      repos        => 'main',
-      ensure       => $ensure, 
-      location     => "http://ppa.launchpad.net/webupd8team/java/ubuntu",
-    }
-    
     # pre-agreeing to user license agreement
     exec { 'oracle-sun-user-agree':
       command => "echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections",
