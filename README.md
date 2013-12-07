@@ -30,7 +30,7 @@ OS Support:
 
 * RedHat family - tested on CentOS 6.3
 * SuSE family   - presently unsupported (patches welcome)
-* Debian family - presently unsupported (patches welcome)
+* Debian family - partially supported on Ubuntu 12.04; see TODO below (more patches welcome)
 
 Class documentation is available via puppetdoc.
 
@@ -206,6 +206,9 @@ TODO
 * Document hive-metastore installation.
 * Document sqoop-metastore installation.
 * Document whirr installation.
+* Debian support: make sure JCE works.
+* Debian support: move CM repo into cm/repo.pp.
+* Debian support: test Debian OS's other than Ubuntu 12.04.
 
 Contributing
 ------------
