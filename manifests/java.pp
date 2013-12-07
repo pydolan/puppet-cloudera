@@ -102,13 +102,15 @@ class cloudera::java (
     # pre-agreeing to user license agreement
     exec { 'oracle-sun-user-agree':
       command => "echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections",
-      require => Apt::Source['oracle-java'],
     }
     
     # installing java and jdk package
     package { 'oracle-java7-installer':
       ensure  => $package_ensure,
-      require => Exec['oracle-sun-user-agree'],
+      require => [
+          Exec['oracle-sun-user-agree'],
+          Apt::Source['oracle-java'] 
+        ]
     }
   } else {
     fail("Class['cloudera::repo']: Unsupported operatingsystem: ${::operatingsystem}")
