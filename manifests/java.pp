@@ -60,31 +60,57 @@ class cloudera::java (
       fail('ensure parameter must be present or absent')
     }
   }
-
-  package { 'jdk':
-    ensure => $package_ensure,
-  }
-
-  file { 'java-profile.d':
-    ensure  => $file_ensure,
-    path    => '/etc/profile.d/java.sh',
-    source  => 'puppet:///modules/cloudera/java.sh',
-    mode    => '0755',
-    owner   => 'root',
-    group   => 'root',
-  }
-
-  # http://biowiki.org/CentosAlternatives
-  # alternatives --install /usr/bin/java java /usr/java/default/jre/bin/java 1600 \
-  #  --slave /usr/bin/keytool keytool /usr/java/default/bin/keytool \
-  #  --slave /usr/bin/rmiregistry rmiregistry /usr/java/default/bin/rmiregistry \
-  #  --slave /usr/lib/jvm/jre jre /usr/java/default/jre \
-  #  --slave /usr/lib/jvm-exports/jre jre_exports /usr/java/default/jre/lib
-  exec { 'java-alternatives':
-    command => 'alternatives --install /usr/bin/java java /usr/java/default/jre/bin/java 1600 --slave /usr/bin/keytool keytool /usr/java/default/bin/keytool --slave /usr/bin/rmiregistry rmiregistry /usr/java/default/bin/rmiregistry --slave /usr/lib/jvm/jre jre /usr/java/default/jre --slave /usr/lib/jvm-exports/jre jre_exports /usr/java/default/jre/lib',
-    unless  => 'alternatives --display java | grep -q /usr/java/default/jre/bin/java',
-    path    => '/bin:/sbin:/usr/bin:/usr/sbin',
-    require => Package['jdk'],
-    returns => [ 0, 2, ],
+  
+  if $::osfamily == 'RedHat' {  
+    package { 'jdk':
+      ensure => $package_ensure,
+    }
+  
+    file { 'java-profile.d':
+      ensure  => $file_ensure,
+      path    => '/etc/profile.d/java.sh',
+      source  => 'puppet:///modules/cloudera/java.sh',
+      mode    => '0755',
+      owner   => 'root',
+      group   => 'root',
+    }
+  
+    # http://biowiki.org/CentosAlternatives
+    # alternatives --install /usr/bin/java java /usr/java/default/jre/bin/java 1600 \
+    #  --slave /usr/bin/keytool keytool /usr/java/default/bin/keytool \
+    #  --slave /usr/bin/rmiregistry rmiregistry /usr/java/default/bin/rmiregistry \
+    #  --slave /usr/lib/jvm/jre jre /usr/java/default/jre \
+    #  --slave /usr/lib/jvm-exports/jre jre_exports /usr/java/default/jre/lib
+    exec { 'java-alternatives':
+      command => 'alternatives --install /usr/bin/java java /usr/java/default/jre/bin/java 1600 --slave /usr/bin/keytool keytool /usr/java/default/bin/keytool --slave /usr/bin/rmiregistry rmiregistry /usr/java/default/bin/rmiregistry --slave /usr/lib/jvm/jre jre /usr/java/default/jre --slave /usr/lib/jvm-exports/jre jre_exports /usr/java/default/jre/lib',
+      unless  => 'alternatives --display java | grep -q /usr/java/default/jre/bin/java',
+      path    => '/bin:/sbin:/usr/bin:/usr/sbin',
+      require => Package['jdk'],
+      returns => [ 0, 2, ],
+    }
+  } elsif $::operatingsystem == 'Ubuntu' {
+    # adding apt repo since Oracle Java no longer supported by Ubuntu 11+
+    apt::source { 'oracle-java':      
+      key          => 'EEA14886', 
+      key_server   => 'keyserver.ubuntu.com',
+      release      => $::lsbdistcodename,
+      repos        => 'main',
+      ensure       => $ensure, 
+      location     => "http://ppa.launchpad.net/webupd8team/java/ubuntu",
+    }
+    
+    # pre-agreeing to user license agreement
+    exec { 'oracle-sun-user-agree':
+      command => "echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections",
+      require => Apt::Source['oracle-java'],
+    }
+    
+    # installing java and jdk package
+    package { 'oracle-java7-installer':
+      ensure  => $package_ensure,
+      require => Exec['oracle-sun-user-agree'],
+    }
+  } else {
+    fail("Class['cloudera::repo']: Unsupported operatingsystem: ${::operatingsystem}")
   }
 }

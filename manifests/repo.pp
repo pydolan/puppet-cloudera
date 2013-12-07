@@ -121,6 +121,7 @@ class cloudera::repo (
       proxy_password => $proxy_password,
     }
   } elsif $::operatingsystem == 'Ubuntu' {
+    # cloudera repos
     Apt::Source {
       key          => $cloudera::params::apt_key, 
       key_server   => $cloudera::params::apt_key_server,
