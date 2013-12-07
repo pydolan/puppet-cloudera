@@ -122,26 +122,39 @@ class cloudera::repo (
     }
   } elsif $::operatingsystem == 'Ubuntu' {
     # cloudera repos
-    Apt::Source {
+    apt::source { 'cloudera':      
       key          => $cloudera::params::apt_key, 
       key_server   => $cloudera::params::apt_key_server,
       repos        => 'contrib',
       architecture => $::architecture,
       ensure       => $ensure, 
-    }
-    apt::source { 'cloudera':      
       location     => "${cloudera::params::aptserver}/cdh4/ubuntu/${::lsbdistcodename}/${::architecture}/cdh",
       release      => "${::lsbdistcodename}-cdh4",
     }
     apt::source { 'impala':      
+      key          => $cloudera::params::apt_key, 
+      key_server   => $cloudera::params::apt_key_server,
+      repos        => 'contrib',
+      architecture => $::architecture,
+      ensure       => $ensure, 
       location     => "${cloudera::params::aptserver}/impala/ubuntu/${::lsbdistcodename}/${::architecture}/impala",
       release      => "${::lsbdistcodename}-impala1",
     }
     apt::source { 'clouderaextras':    
+      key          => $cloudera::params::apt_key, 
+      key_server   => $cloudera::params::apt_key_server,
+      repos        => 'contrib',
+      architecture => $::architecture,
+      ensure       => $ensure, 
       location     => "${cloudera::params::aptserver}/gplextras/ubuntu/${::lsbdistcodename}/${::architecture}/gplextras",
       release      => "${::lsbdistcodename}-gplextras4",
     }
     apt::source { 'cm':
+      key          => $cloudera::params::apt_key, 
+      key_server   => $cloudera::params::apt_key_server,
+      repos        => 'contrib',
+      architecture => $::architecture,
+      ensure       => $ensure, 
       location     => "${cloudera::params::aptserver}/cm4/ubuntu/${::lsbdistcodename}/${::architecture}/cm/",
       release      => "${::lsbdistcodename}-cm4",
     }
