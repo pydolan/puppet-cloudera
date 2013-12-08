@@ -28,7 +28,7 @@
 #
 # Copyright (C) 2013 Mike Arnold, unless otherwise noted.
 #
-class cloudera::cm::repo (
+class cloudera::java::repo (
   $ensure         = $cloudera::params::ensure
 ) inherits cloudera::params {
   case $ensure {
