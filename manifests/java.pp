@@ -98,10 +98,7 @@ class cloudera::java (
     # installing java and jdk package
     package { 'oracle-java7-installer':
       ensure  => $package_ensure,
-      require => [
-          Exec['oracle-sun-user-agree'],
-          Apt::Source['oracle-java'] 
-        ],
+      require => Exec['oracle-sun-user-agree'],
     }
   } else {
     fail("Class['cloudera::repo']: Unsupported operatingsystem: ${::operatingsystem}")
