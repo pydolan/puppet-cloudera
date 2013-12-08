@@ -91,9 +91,15 @@ class cloudera::cm::repo (
       proxy_password => $proxy_password,
     }
   } elsif $::operatingsystem == 'Ubuntu' {
-    # TODO: figure out why using apt::source here causes conflict w/ ../repo.pp's file
-    #       (short-term fix: moved cm repo definition to ../repo.pp)
-    info("******* NOTE: CM repo already added by parent repo.pp *********")
+    apt::source { 'cm':
+      key          => $cloudera::params::apt_key, 
+      key_server   => $cloudera::params::apt_key_server,
+      repos        => 'contrib',
+      architecture => $::architecture,
+      ensure       => $ensure, 
+      location     => "${cloudera::params::aptserver}/cm4/ubuntu/${::lsbdistcodename}/${::architecture}/cm/",
+      release      => "${::lsbdistcodename}-cm4",
+    }
   } else {
     fail("Class['cloudera::cm::repo']: Unsupported operatingsystem: ${::operatingsystem}")
   }

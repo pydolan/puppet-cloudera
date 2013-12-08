@@ -101,6 +101,6 @@ class cloudera::java (
       require => Exec['oracle-sun-user-agree'],
     }
   } else {
-    fail("Class['cloudera::repo']: Unsupported operatingsystem: ${::operatingsystem}")
+    fail("Class['cloudera::java']: Unsupported operatingsystem: ${::operatingsystem}")
   }
 }
