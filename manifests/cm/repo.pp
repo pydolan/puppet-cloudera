@@ -92,8 +92,6 @@ class cloudera::cm::repo (
     }
   } elsif $::operatingsystem == 'Ubuntu' {
     apt::source { 'cm':
-      key          => $cloudera::params::apt_key, 
-      key_server   => $cloudera::params::apt_key_server,
       repos        => 'contrib',
       architecture => $::architecture,
       ensure       => $ensure, 

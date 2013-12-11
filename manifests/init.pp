@@ -162,6 +162,16 @@ class cloudera (
   validate_bool($use_tls)
   validate_bool($use_parcels)
 
+  # temporarily putting keys here for debugging (TODO: move to repo.pp files)
+  apt::key { 'oracle-java':
+    key          => 'EEA14886',
+    key_server   => 'keyserver.ubuntu.com',
+  }
+  apt::key { 'cloudera':
+    key          => 'EEA14886',
+    key_server   => 'keyserver.ubuntu.com',
+  }  
+  
   anchor { 'cloudera::begin': }
   anchor { 'cloudera::end': }
 
